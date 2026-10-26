@@ -57,9 +57,14 @@ export const useAuthStore = create<AuthState>()(
       // On reload, isAuthenticated + userId + tenantSlug survive, but
       // accessToken comes back null — use that as the trigger to silently
       // call /auth/refresh on app bootstrap and repopulate it via setAuth().
+      // Roles and permissions are persisted so permission-gated UI (e.g. the
+      // sidebar) renders correctly before the refresh completes. They are a
+      // UX hint only: the backend remains the source of truth for access.
       partialize: (state) => ({
         userId: state.userId,
         tenantSlug: state.tenantSlug,
+        roles: state.roles,
+        permissions: state.permissions,
         isAuthenticated: state.isAuthenticated,
       }),
     },

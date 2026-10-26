@@ -9,12 +9,14 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { MAIN_NAVIGATION } from "@/components/shared/navigation";
+import { getNavigationForPermissions } from "@/components/shared/navigation";
 import SidebarBrand from "@/components/shared/sidebar-brand";
 import SidebarNavItem from "@/components/shared/sidebar-nav-item";
 import SidebarUtilities from "@/components/shared/sidebar-utilities";
+import { useAuthStore } from "@/features/auth/stores/auth-store";
 
 export default function AppSidebar() {
+  const permissions = useAuthStore((state) => state.permissions);
   return (
     <TooltipProvider delay={200}>
       <Sidebar collapsible="icon" className="border-sidebar-border">
@@ -30,7 +32,7 @@ export default function AppSidebar() {
             <SidebarGroup className="p-0 px-4 group-data-[collapsible=icon]:px-3">
               <SidebarGroupContent>
                 <SidebarMenu className="gap-1.5">
-                  {MAIN_NAVIGATION.map((item) => (
+                  {getNavigationForPermissions(permissions).map((item) => (
                     <SidebarNavItem key={item.href} item={item} />
                   ))}
                 </SidebarMenu>
