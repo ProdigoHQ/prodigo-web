@@ -6,8 +6,8 @@ import type {
 } from "@/features/auth/schemas/auth-schema";
 import type {
   AuthResponse,
+  FetchedPublicModule,
   MessageResponse,
-  SelectedModule,
 } from "@/features/auth/types";
 
 export const authApi = {
@@ -27,8 +27,9 @@ export const authApi = {
     return data;
   },
 
-  async fetchModules(): Promise<SelectedModule[]> {
-    const { data } = await httpClient.get<SelectedModule[]>("/auth/modules");
+  async fetchModules(): Promise<FetchedPublicModule[]> {
+    const { data } =
+      await httpClient.get<FetchedPublicModule[]>("/modules/public");
     return data;
   },
 

@@ -7,11 +7,19 @@ export interface AuthResponse {
 }
 
 export interface SelectedModule {
-  moduleId: number;
+  moduleId: string;
   moduleName: string;
   moduleKey: string;
 }
 
+export interface FetchedPublicModule {
+  id: string;
+  name: string;
+  description: string;
+  moduleKey: string;
+  price: number;
+  currency: string;
+}
 export interface MessageResponse {
   message: string;
 }

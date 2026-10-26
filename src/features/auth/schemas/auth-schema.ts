@@ -1,9 +1,7 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  username: z
-    .string()
-    .min(1, "Indiquez votre nom d'utilisateur."),
+  username: z.string().min(1, "Indiquez votre nom d'utilisateur."),
   password: z.string().min(1, "Le mot de passe est requis."),
   remember: z.boolean().default(true),
 });
@@ -50,7 +48,7 @@ export const companyInfoSchema = z.object({
 });
 
 export const selectedModuleSchema = z.object({
-  moduleId: z.number().int().positive(),
+  moduleId: z.string(),
   moduleName: z.string().min(1),
   moduleKey: z.string().min(1),
 });

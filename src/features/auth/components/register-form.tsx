@@ -47,7 +47,10 @@ import {
   useRegisterMutation,
 } from "@/features/auth/hooks/use-auth";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
-import type { SelectedModule } from "@/features/auth/types";
+import type {
+  FetchedPublicModule,
+  SelectedModule,
+} from "@/features/auth/types";
 
 const COUNTRIES = [
   { name: "Cameroun", code: "CM" },
@@ -162,16 +165,24 @@ export default function RegisterForm() {
     if (errors[field]) setErrors((e) => ({ ...e, [field]: undefined }));
   }
 
-  function toggleModule(module: SelectedModule) {
+  function toggleModule(module: FetchedPublicModule) {
     setValues((v) => {
-      const alreadySelected = v.selectedModules.some(
-        (m) => m.moduleId === module.moduleId,
-      );
+      const alreadySelected = v.selectedModules.some((m) => {
+        return m.moduleId === module.id;
+      });
+
       return {
         ...v,
         selectedModules: alreadySelected
-          ? v.selectedModules.filter((m) => m.moduleId !== module.moduleId)
-          : [...v.selectedModules, module],
+          ? v.selectedModules.filter((m) => m.moduleId !== module.id)
+          : [
+              ...v.selectedModules,
+              {
+                moduleId: module.id,
+                moduleKey: module.moduleKey,
+                moduleName: module.moduleKey,
+              },
+            ],
       };
     });
     if (errors.selectedModules) {
@@ -586,12 +597,12 @@ export default function RegisterForm() {
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {modules.map((module) => {
                     const selected = values.selectedModules.some(
-                      (m) => m.moduleId === module.moduleId,
+                      (m) => m.moduleId === module.id,
                     );
                     const Icon = MODULE_ICONS[module.moduleKey] ?? Box;
                     return (
                       <button
-                        key={module.moduleId}
+                        key={module.id}
                         type="button"
                         onClick={() => toggleModule(module)}
                         aria-pressed={selected}
@@ -611,7 +622,7 @@ export default function RegisterForm() {
                           <Icon className="h-4 w-4" />
                         </div>
                         <span className="flex-1 text-sm font-medium text-gray-900">
-                          {module.moduleName}
+                          {module.name}
                         </span>
                         <span
                           className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
