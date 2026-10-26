@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { AuthResponse, Authority } from "@/features/auth/types";
+import type { AuthResponse } from "@/features/auth/types";
 
 interface AuthState {
   userId: number | null;
@@ -17,21 +17,6 @@ interface AuthState {
   hasRole: (role: string) => boolean;
   hasPermission: (permission: string) => boolean;
   hasAnyRole: (...roles: string[]) => boolean;
-}
-
-function splitAuthorities(authorities: Authority[]) {
-  const roles: string[] = [];
-  const permissions: string[] = [];
-
-  for (const { authority } of authorities) {
-    if (authority.startsWith("ROLE_")) {
-      roles.push(authority.slice(5));
-    } else if (authority.startsWith("PERM_")) {
-      permissions.push(authority.slice(5));
-    }
-  }
-
-  return { roles, permissions };
 }
 
 const initialState = {
@@ -49,13 +34,12 @@ export const useAuthStore = create<AuthState>()(
       ...initialState,
 
       setAuth: (response) => {
-        const { roles, permissions } = splitAuthorities(response.authorities);
         set({
           userId: response.userId,
           tenantSlug: response.tenantSlug,
           accessToken: response.accessToken,
-          roles,
-          permissions,
+          roles: response.roles,
+          permissions: response.permissions,
           isAuthenticated: true,
         });
       },

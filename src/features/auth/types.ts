@@ -1,12 +1,9 @@
-export interface Authority {
-  authority: string;
-}
-
 export interface AuthResponse {
   userId: number;
   tenantSlug: string | null;
   accessToken: string;
-  authorities: Authority[];
+  roles: string[];
+  permissions: string[];
 }
 
 export interface SelectedModule {
