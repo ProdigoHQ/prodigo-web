@@ -3,10 +3,19 @@ import { cn } from "@/lib/utils";
 
 type LogoProps = {
   variant?: "light" | "dark";
+  size?: "default" | "lg";
   className?: string;
+  nameClassName?: string;
 };
 
-export default function Logo({ variant = "light", className }: LogoProps) {
+export default function Logo({
+  variant = "light",
+  size = "default",
+  className,
+  nameClassName,
+}: LogoProps) {
+  const isLarge = size === "lg";
+
   return (
     <div
       className={cn(
@@ -15,13 +24,23 @@ export default function Logo({ variant = "light", className }: LogoProps) {
         className,
       )}
     >
-      <div className="auth-logo__mark flex h-9 w-9 items-center justify-center rounded-xl">
-        <Hexagon className="h-5 w-5 text-white" strokeWidth={2.5} />
+      <div
+        className={cn(
+          "auth-logo__mark flex shrink-0 items-center justify-center rounded-xl",
+          isLarge ? "h-[42px] w-[42px]" : "h-9 w-9",
+        )}
+      >
+        <Hexagon
+          className={cn("text-white", isLarge ? "h-6 w-6" : "h-5 w-5")}
+          strokeWidth={2.5}
+        />
       </div>
       <span
         className={cn(
-          "text-xl font-bold",
+          "font-bold tracking-tight",
+          isLarge ? "text-2xl" : "text-xl",
           variant === "dark" ? "text-white" : "auth-logo__name",
+          nameClassName,
         )}
       >
         Prodigo

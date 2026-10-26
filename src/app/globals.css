@@ -99,6 +99,15 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot="sidebar-gap"],
+    [data-slot="sidebar-container"],
+    [data-slot="sheet-content"],
+    [data-slot="sidebar"][data-mobile="true"] {
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 :root {
@@ -172,21 +181,25 @@
 
   --radius: 0.625rem;
 
-  --sidebar: oklch(0.985 0 0);
+  /* Sidebar — Prodigo workspace navigation */
+  --sidebar-background: var(--color-navy);
+  --sidebar-foreground: #a6b5d5;
+  --sidebar-active: var(--color-primary);
+  --sidebar-active-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-hover: rgba(255, 255, 255, 0.07);
 
-  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar: var(--sidebar-background);
 
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: var(--sidebar-active);
 
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: var(--sidebar-active-foreground);
 
-  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent: var(--sidebar-hover);
 
-  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-accent-foreground: #ffffff;
 
-  --sidebar-border: oklch(0.922 0 0);
-
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: var(--sidebar-active);
 }
 
 body {
