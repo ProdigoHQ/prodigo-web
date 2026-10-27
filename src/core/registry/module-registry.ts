@@ -24,6 +24,11 @@ class ModuleRegistry {
     userPermissions: string[]
   ): ModuleManifest[] {
     return this.getAll().filter((m) => {
+      // Core modules don't require subscription
+      if ((m as any).core) {
+        if (!m.requiredPermissions?.length) return true;
+        return m.requiredPermissions.some((p) => userPermissions?.includes(p));
+      }
       if (!enabledModuleKeys?.includes(m.key)) return false;
       if (!m.requiredPermissions?.length) return true;
       return m.requiredPermissions.some((p) => userPermissions?.includes(p));
@@ -42,7 +47,12 @@ class ModuleRegistry {
       .filter(
         (n) =>
           !n.permissions?.length ||
-          n.permissions.some((p) => userPermissions?.includes(p))
+          n.permissions.some((p) => userPermissions?.includes(p)) ||
+          userPermissions?.some((up) => {
+            if (!up) return false;
+            const [mk] = up.split(".");
+            return mk === (n as any).moduleKey?.toUpperCase?.();
+          })
       )
       .sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
   }

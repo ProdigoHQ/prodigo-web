@@ -39,7 +39,7 @@ export interface ModuleWidget {
 }
 
 export interface ModuleManifest {
-  key: ModuleKey;
+  key: ModuleKey | string;
   name: string;
   description?: string;
   version: string;
@@ -50,4 +50,5 @@ export interface ModuleManifest {
   widgets?: ModuleWidget[];
   dependencies?: ModuleKey[];
   enabledByDefault?: boolean;
+  core?: boolean;
 }

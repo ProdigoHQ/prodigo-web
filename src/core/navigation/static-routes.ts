@@ -12,7 +12,6 @@ export interface StaticModuleRoute {
 }
 
 const navItems = [
-  ...dashboardManifest.navItems,
   ...crmManifest.navItems,
   ...inventoryManifest.navItems,
   ...salesManifest.navItems,
