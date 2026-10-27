@@ -1,24 +1,21 @@
 import { notFound } from "next/navigation";
 import ModulePlaceholder from "@/modules/dashboard/adapters/in/ui/module-placeholder";
-import { MAIN_NAVIGATION } from "@/components/shared/navigation";
+import {
+  getStaticModuleRoute,
+  STATIC_MODULE_ROUTES,
+} from "@/core/navigation/static-routes";
 
 export function generateStaticParams() {
-  return MAIN_NAVIGATION.filter((item) => item.href !== "/dashboard").map(
-    (item) => ({
-      module: item.href.replace(/^\//, ""),
-    }),
-  );
+  return STATIC_MODULE_ROUTES.map((route) => ({
+    module: route.module,
+  }));
 }
 
 export default async function ModulePage({
   params,
 }: PageProps<"/[module]">) {
   const { module } = await params;
-  const item = MAIN_NAVIGATION.find(
-    (navigationItem) =>
-      navigationItem.href === `/${module}` &&
-      navigationItem.href !== "/dashboard",
-  );
+  const item = getStaticModuleRoute(module);
 
   if (!item) notFound();
 
@@ -26,7 +23,7 @@ export default async function ModulePage({
     <ModulePlaceholder
       title={item.label}
       description={item.description}
-      icon={item.icon}
+      icon={undefined}
     />
   );
 }
