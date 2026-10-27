@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthStore } from "@/features/auth/stores/auth-store";
+import { useAuthStore } from "@/modules/auth/stores/auth-store";
 
 export function usePermissions() {
   const roles = useAuthStore((s) => s.roles);

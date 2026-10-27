@@ -12,7 +12,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import SidebarBrand from "@/components/shared/sidebar-brand";
 import SidebarNavItem from "@/components/shared/sidebar-nav-item";
 import SidebarUtilities from "@/components/shared/sidebar-utilities";
-import { useAuthStore } from "@/features/auth/stores/auth-store";
+import { useAuthStore } from "@/modules/auth/stores/auth-store";
 import { moduleRegistry } from "@/core/registry/module-registry";
 
 export default function AppSidebar() {

@@ -2,7 +2,7 @@
 
 import { Building2 } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { useAuthStore } from "@/features/auth/stores/auth-store";
+import { useAuthStore } from "@/modules/auth/stores/auth-store";
 
 export default function AppHeader() {
   const tenantSlug = useAuthStore((state) => state.tenantSlug);

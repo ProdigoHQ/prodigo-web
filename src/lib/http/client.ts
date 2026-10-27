@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useAuthStore } from "@/features/auth/stores/auth-store";
+import { useAuthStore } from "@/modules/auth/stores/auth-store";
 import { toApiError } from "@/lib/http/api-error";
 
 export const httpClient = axios.create({

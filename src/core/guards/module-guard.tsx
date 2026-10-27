@@ -1,7 +1,7 @@
 "use client";
 
 import { usePermissions } from "@/core/rbac/use-permissions";
-import { useAuthStore } from "@/features/auth/stores/auth-store";
+import { useAuthStore } from "@/modules/auth/stores/auth-store";
 
 interface ModuleGuardProps {
   moduleKey: string;

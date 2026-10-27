@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Logo from "@/components/shared/logo";
-import BrandPanel from "@/features/auth/components/brand-panel";
+import BrandPanel from "@/modules/auth/adapters/in/ui/brand-panel";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (

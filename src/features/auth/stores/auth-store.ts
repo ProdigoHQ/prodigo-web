@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { AuthResponse } from "@/features/auth/types";
+import type { AuthResponse } from "@/modules/auth/types";
 
 export interface AuthState {
   userId: number | null;

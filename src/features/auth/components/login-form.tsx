@@ -15,13 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import Field from "@/features/auth/components/field";
+import Field from "@/modules/auth/components/field";
 import {
   loginSchema,
   toFieldErrors,
-} from "@/features/auth/schemas/auth-schema";
-import { useLoginMutation } from "@/features/auth/hooks/use-auth";
-import { useAuthStore } from "@/features/auth/stores/auth-store";
+} from "@/modules/auth/schemas/auth-schema";
+import { useLoginMutation } from "@/modules/auth/hooks/use-auth";
+import { useAuthStore } from "@/modules/auth/stores/auth-store";
 
 export default function LoginForm() {
   const router = useRouter();

@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Field from "@/features/auth/components/field";
-import { forgotPasswordSchema, toFieldErrors } from "@/features/auth/schemas/auth-schema";
-import { useForgotPasswordMutation } from "@/features/auth/hooks/use-auth";
+import Field from "@/modules/auth/components/field";
+import { forgotPasswordSchema, toFieldErrors } from "@/modules/auth/schemas/auth-schema";
+import { useForgotPasswordMutation } from "@/modules/auth/hooks/use-auth";
 
 export default function ForgotPasswordForm() {
   const router = useRouter();

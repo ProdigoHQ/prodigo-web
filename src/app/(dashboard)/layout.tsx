@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { cookies } from "next/headers";
-import RequireAuth from "@/features/auth/components/require-auth";
+import RequireAuth from "@/modules/auth/adapters/in/ui/require-auth";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/shared/app-sidebar";
 import AppHeader from "@/components/shared/app-header";

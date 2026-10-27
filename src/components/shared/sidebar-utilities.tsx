@@ -10,7 +10,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { sidebarItemClassName } from "@/components/shared/sidebar-nav-item";
-import { useAuthStore } from "@/features/auth/stores/auth-store";
+import { useAuthStore } from "@/modules/auth/stores/auth-store";
 
 export default function SidebarUtilities() {
   const router = useRouter();

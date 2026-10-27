@@ -1,12 +1,12 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { authApi } from "@/features/auth/api/auth-api";
+import { authApi } from "@/modules/auth/api/auth-api";
 import type {
   ForgotPasswordInput,
   LoginInput,
   RegisterInput,
-} from "@/features/auth/schemas/auth-schema";
+} from "@/modules/auth/schemas/auth-schema";
 
 export function useLoginMutation() {
   return useMutation({

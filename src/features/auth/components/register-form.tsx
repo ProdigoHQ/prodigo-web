@@ -35,22 +35,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Field from "@/features/auth/components/field";
+import Field from "@/modules/auth/components/field";
 import {
   companyInfoSchema,
   personalInfoSchema,
   registerSchema,
   toFieldErrors,
-} from "@/features/auth/schemas/auth-schema";
+} from "@/modules/auth/schemas/auth-schema";
 import {
   useModulesQuery,
   useRegisterMutation,
-} from "@/features/auth/hooks/use-auth";
-import { useAuthStore } from "@/features/auth/stores/auth-store";
+} from "@/modules/auth/hooks/use-auth";
+import { useAuthStore } from "@/modules/auth/stores/auth-store";
 import type {
   FetchedPublicModule,
   SelectedModule,
-} from "@/features/auth/types";
+} from "@/modules/auth/types";
 
 const COUNTRIES = [
   { name: "Cameroun", code: "CM" },

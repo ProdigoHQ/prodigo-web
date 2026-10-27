@@ -3,12 +3,12 @@ import type {
   ForgotPasswordInput,
   LoginInput,
   RegisterInput,
-} from "@/features/auth/schemas/auth-schema";
+} from "@/modules/auth/schemas/auth-schema";
 import type {
   AuthResponse,
   FetchedPublicModule,
   MessageResponse,
-} from "@/features/auth/types";
+} from "@/modules/auth/types";
 
 export const authApi = {
   async login(input: LoginInput): Promise<AuthResponse> {
