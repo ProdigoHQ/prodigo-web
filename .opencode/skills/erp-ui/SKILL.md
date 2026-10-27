@@ -1,6 +1,6 @@
 ---
 name: erp-ui
-description: Build consistent Prodigo ERP application screens — dashboards, data tables, filters, search, pagination, drawers, modals, KPI cards, and business module CRUD. Use when working on the dashboard or any ERP module UI (customers, products, invoices, orders, inventory, ...).
+description: Build consistent Prodigo ERP application screens — dashboards, data tables, filters, search, pagination, drawers, modals, KPI cards, and business module CRUD. Use when working on the dashboard or any ERP module UI (customers, products, invoices, orders, inventory, crm, sales, ...).
 metadata:
   product: Prodigo ERP
   category: erp
@@ -55,6 +55,16 @@ Use consistent semantic status badges (see design system). Never invent new colo
 
 Currency, dates, and numbers must be formatted consistently per the tenant's locale/currency — never hardcode presentation formatting across components. Extract formatters into shared helpers.
 
-## Feature Structure
+## Module-Aware UI
 
-Feature code is colocated under `src/features/<feature>/` (api, components, hooks, schemas, types). Data comes from the Spring Boot API through the axios client — never hardcode responses.
+- **Respect subscriptions**: Only show UI for modules in tenant's `enabledModules`. Use `ModuleGuard` for routes.
+- **Respect permissions**: Hide/show actions based on permissions via `PermissionGuard` or `usePermissions()`. Never rely solely on hiding.
+- **Navigation**: Build from `moduleRegistry.getNav()` filtered by subscriptions + permissions.
+- **Tenant context**: Always display current workspace/tenant name.
+
+## Code Organization
+
+- **Preferred (new code)**: Put business UI in `src/modules/<moduleKey>/adapters/in/ui/` with manifest, routes, hooks in the module
+- **Legacy**: Feature code may still live under `src/features/<feature>/` during migration — follow existing patterns but prefer the kernel+modules structure for new modules
+- Data comes from the Spring Boot API through `core/http/client.ts` — never hardcode responses
+- Use shared components from `src/shared/components/` or `src/components/shared/` when used across modules
