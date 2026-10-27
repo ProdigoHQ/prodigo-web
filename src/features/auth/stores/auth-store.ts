@@ -4,15 +4,18 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { AuthResponse } from "@/features/auth/types";
 
-interface AuthState {
+export interface AuthState {
   userId: number | null;
   tenantSlug: string | null;
   accessToken: string | null;
   roles: string[];
   permissions: string[];
+  enabledModules: string[];
   isAuthenticated: boolean;
 
   setAuth: (response: AuthResponse) => void;
+  setSession: (session: Partial<AuthState>) => void;
+  setEnabledModules: (modules: string[]) => void;
   clearAuth: () => void;
   hasRole: (role: string) => boolean;
   hasPermission: (permission: string) => boolean;
@@ -25,6 +28,7 @@ const initialState = {
   accessToken: null,
   roles: [],
   permissions: [],
+  enabledModules: [],
   isAuthenticated: false,
 };
 
@@ -38,10 +42,23 @@ export const useAuthStore = create<AuthState>()(
           userId: response.userId,
           tenantSlug: response.tenantSlug,
           accessToken: response.accessToken,
-          roles: response.roles,
-          permissions: response.permissions,
+          roles: response.roles ?? [],
+          permissions: response.permissions ?? [],
           isAuthenticated: true,
         });
+      },
+
+      setSession: (session) => {
+        set((state) => ({
+          ...state,
+          ...session,
+          isAuthenticated:
+            session.isAuthenticated ?? state.isAuthenticated ?? Boolean(session.accessToken),
+        }));
+      },
+
+      setEnabledModules: (modules) => {
+        set({ enabledModules: modules ?? [] });
       },
 
       clearAuth: () => set(initialState),
@@ -53,18 +70,12 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "prodigo-auth",
       storage: createJSONStorage(() => localStorage),
-      // accessToken is intentionally left out of persisted storage.
-      // On reload, isAuthenticated + userId + tenantSlug survive, but
-      // accessToken comes back null — use that as the trigger to silently
-      // call /auth/refresh on app bootstrap and repopulate it via setAuth().
-      // Roles and permissions are persisted so permission-gated UI (e.g. the
-      // sidebar) renders correctly before the refresh completes. They are a
-      // UX hint only: the backend remains the source of truth for access.
       partialize: (state) => ({
         userId: state.userId,
         tenantSlug: state.tenantSlug,
         roles: state.roles,
         permissions: state.permissions,
+        enabledModules: state.enabledModules,
         isAuthenticated: state.isAuthenticated,
       }),
     },
