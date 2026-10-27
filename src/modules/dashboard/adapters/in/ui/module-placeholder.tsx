@@ -1,15 +1,16 @@
 import type { LucideIcon } from "lucide-react";
+import { Package } from "lucide-react";
 
 type ModulePlaceholderProps = {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
 };
 
 export default function ModulePlaceholder({
   title,
   description,
-  icon: Icon,
+  icon: Icon = Package,
 }: ModulePlaceholderProps) {
   return (
     <div className="flex flex-1 flex-col gap-6">
