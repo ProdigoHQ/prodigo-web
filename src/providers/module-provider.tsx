@@ -6,6 +6,7 @@ import { crmManifest } from "@/modules/crm/manifest";
 import { inventoryManifest } from "@/modules/inventory/manifest";
 import { salesManifest } from "@/modules/sales/manifest";
 import { invoicingManifest } from "@/modules/invoicing/manifest";
+import { dashboardManifest } from "@/modules/dashboard/manifest";
 
 export function ModuleProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -13,6 +14,7 @@ export function ModuleProvider({ children }: { children: React.ReactNode }) {
     if (!moduleRegistry.get("inventory")) moduleRegistry.register(inventoryManifest);
     if (!moduleRegistry.get("sales")) moduleRegistry.register(salesManifest);
     if (!moduleRegistry.get("invoicing")) moduleRegistry.register(invoicingManifest);
+    if (!moduleRegistry.get("company")) moduleRegistry.register(dashboardManifest);
   }, []);
 
   return <>{children}</>;

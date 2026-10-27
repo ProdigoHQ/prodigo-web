@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import ModulePlaceholder from "@/features/dashboard/components/module-placeholder";
+import ModulePlaceholder from "@/modules/dashboard/adapters/in/ui/module-placeholder";
 import { MAIN_NAVIGATION } from "@/components/shared/navigation";
 
 export function generateStaticParams() {
