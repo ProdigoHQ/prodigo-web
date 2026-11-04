@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prodigo ERP Frontend
+
+Prodigo is a modern, multi-tenant cloud ERP for businesses in Cameroon and West Africa. This repository is the web frontend — a Next.js application covering the public marketing site, authentication, and the foundation of the authenticated ERP workspace.
+
+![Prodigo ERP landing page with an interactive product preview](./docs/assets/prodigo-preview.png)
+
+## What's Inside
+
+- **Product-first landing experience** — an interactive preview of the dashboard, customers, products, stock, invoices, and reports.
+- **Authentication flows** — login, forgot password, and a three-step registration journey (account → company → modules).
+- **ERP workspace foundation** — a responsive dashboard shell, persisted session, and module navigation.
+- **Feature-based architecture** — frontend modules mirror the Spring Boot backend and keep API, UI, hooks, schemas, and state colocated.
+- **Prodigo Design System** — consistent tokens, accessible primitives, and responsive layouts across every screen.
+
+## Tech Stack
+
+| Area          | Technology                                     |
+| ------------- | ---------------------------------------------- |
+| Framework     | Next.js 16 (App Router)                        |
+| UI            | React 19, Tailwind CSS v4, shadcn/ui on Base UI |
+| Language      | TypeScript (strict)                            |
+| Server state  | TanStack Query                                 |
+| Client state  | Zustand (persisted auth session)               |
+| HTTP          | Axios                                          |
+| Validation    | Zod                                            |
+| Icons         | Lucide                                         |
 
 ## Getting Started
 
-First, run the development server:
+### Requirements
+
+- Node.js 20.9+
+- pnpm 10+
+
+### Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env.local
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The frontend expects the Spring Boot API at the URL configured in `.env.local`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api/1.0
+```
 
-## Learn More
+No Next.js API routes are used. All requests go through the shared Axios client in `src/lib/http/client.ts`, which attaches the bearer token, normalizes API errors, and redirects to `/login` on `401`.
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command       | Description                                      |
+| ------------- | ------------------------------------------------ |
+| `pnpm dev`    | Start the development server                     |
+| `pnpm build`  | Create a production build (also type-checks)     |
+| `pnpm start`  | Serve the production build                       |
+| `pnpm lint`   | Run ESLint                                       |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```text
+src/
+├── app/                 # Routes only (landing, auth, dashboard)
+├── components/
+│   ├── ui/              # shadcn/ui primitives
+│   └── shared/          # Cross-app components
+├── features/            # Feature-based modules
+│   ├── auth/            # Session, forms, API, schemas
+│   ├── dashboard/       # Workspace foundation
+│   └── landing/         # Marketing site and hero preview
+├── lib/                 # HTTP client, errors, utilities
+└── providers/           # App providers
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Documentation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Architecture notes, ADRs, diagrams, and conventions live in [`docs/`](./docs/README.md). Start with the [architecture overview](./docs/architecture/00-overview.md).
+
+## Contributing
+
+- Keep `src/app/` thin — routes should delegate to feature components.
+- Colocate code under `src/features/<feature>/`.
+- Reuse design-system components and tokens before introducing new ones.
+- Run `pnpm lint` and `pnpm build` before opening a pull request.
