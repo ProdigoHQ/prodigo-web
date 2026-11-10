@@ -1,10 +1,16 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  Activity,
+  Building2,
+  Boxes,
+  CreditCard,
   FileText,
+  KeyRound,
   LayoutDashboard,
   Monitor,
   Package,
   Settings,
+  ShieldCheck,
   ShoppingCart,
   Target,
   UserRoundCog,
@@ -107,6 +113,62 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
   },
 ];
 
+/**
+ * Platform administration navigation. Platform permissions are the global
+ * `ERP.<RESOURCE>.<ACTION>` codes and are never tenant-scoped.
+ */
+export const PLATFORM_NAVIGATION: NavigationItem[] = [
+  {
+    label: "Entreprises",
+    href: "/admin/tenants",
+    icon: Building2,
+    description: "Gérez les espaces de travail des entreprises.",
+    permissions: ["ERP.TENANT.READ"],
+  },
+  {
+    label: "Utilisateurs",
+    href: "/admin/users",
+    icon: UsersRound,
+    description: "Gérez les comptes de la plateforme.",
+    permissions: ["ERP.USER.READ"],
+  },
+  {
+    label: "Rôles",
+    href: "/admin/roles",
+    icon: ShieldCheck,
+    description: "Définissez les rôles de la plateforme.",
+    permissions: ["ERP.ROLE.READ"],
+  },
+  {
+    label: "Permissions",
+    href: "/admin/permissions",
+    icon: KeyRound,
+    description: "Consultez les permissions disponibles.",
+    permissions: ["ERP.PERMISSION.READ"],
+  },
+  {
+    label: "Modules",
+    href: "/admin/modules",
+    icon: Boxes,
+    description: "Gérez les modules ERP et leur disponibilité.",
+    permissions: ["ERP.MODULE.READ"],
+  },
+  {
+    label: "Abonnements",
+    href: "/admin/subscriptions",
+    icon: CreditCard,
+    description: "Suivez les abonnements aux modules.",
+    permissions: ["ERP.SUBSCRIPTION.READ", "ERP.BILLING.READ"],
+  },
+  {
+    label: "Système",
+    href: "/admin/system",
+    icon: Activity,
+    description: "Supervisez l'état et les journaux de la plateforme.",
+    permissions: ["ERP.SYSTEM.READ", "ERP.SYSTEM.MONITOR", "ERP.SYSTEM.LOGS"],
+  },
+];
+
 export function isNavigationItemActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -141,6 +203,14 @@ export function canAccessNavigationItem(
  */
 export function getNavigationForPermissions(permissions: readonly string[]) {
   return MAIN_NAVIGATION.filter((item) =>
+    canAccessNavigationItem(item, permissions),
+  );
+}
+
+export function getPlatformNavigationForPermissions(
+  permissions: readonly string[],
+) {
+  return PLATFORM_NAVIGATION.filter((item) =>
     canAccessNavigationItem(item, permissions),
   );
 }
