@@ -4,6 +4,7 @@ import RequireAuth from "@/features/auth/components/require-auth";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/shared/app-sidebar";
 import AppHeader from "@/components/shared/app-header";
+import RequireNavigationAccess from "@/components/shared/require-navigation-access";
 
 export default async function DashboardLayout({
   children,
@@ -28,7 +29,7 @@ export default async function DashboardLayout({
         <SidebarInset className="min-w-0 bg-zinc-50">
           <AppHeader />
           <div className="flex min-w-0 flex-1 flex-col p-4 md:p-6">
-            {children}
+            <RequireNavigationAccess>{children}</RequireNavigationAccess>
           </div>
         </SidebarInset>
       </SidebarProvider>

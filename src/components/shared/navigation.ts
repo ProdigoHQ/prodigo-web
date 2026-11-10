@@ -250,6 +250,12 @@ export function getPlatformNavigationForPermissions(
   );
 }
 
+export function findNavigationItemForPath(pathname: string) {
+  return [...MAIN_NAVIGATION, ...PLATFORM_NAVIGATION].find((item) =>
+    isNavigationItemActive(pathname, item.href),
+  );
+}
+
 /**
  * Groups items by category, keeping the order in which each category first
  * appears. Empty categories are never returned.
