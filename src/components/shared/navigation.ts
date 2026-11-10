@@ -18,11 +18,24 @@ import {
   Warehouse,
 } from "lucide-react";
 
+export const NAVIGATION_CATEGORY = {
+  overview: "Vue d'ensemble",
+  sales: "Ventes & clients",
+  operations: "Opérations",
+  people: "Ressources humaines",
+  workspace: "Espace de travail",
+  accounts: "Comptes",
+  access: "Accès & sécurité",
+  platform: "Plateforme",
+} as const;
+
 export type NavigationItem = {
   label: string;
   href: string;
   icon: LucideIcon;
   description: string;
+  /** Sidebar section the item belongs to. Items sharing a category are grouped together. */
+  category: string;
   /**
    * Permission codes that grant access to this item.
    *
@@ -32,6 +45,11 @@ export type NavigationItem = {
    * An empty list makes the item available to every authenticated user.
    */
   permissions: string[];
+};
+
+export type NavigationGroup = {
+  label: string;
+  items: NavigationItem[];
 };
 
 /**
@@ -44,6 +62,7 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     href: "/dashboard",
     icon: LayoutDashboard,
     description: "Vue d'ensemble de votre activité.",
+    category: NAVIGATION_CATEGORY.overview,
     permissions: [],
   },
   {
@@ -51,6 +70,7 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     href: "/clients",
     icon: UsersRound,
     description: "Gérez vos clients et leurs informations.",
+    category: NAVIGATION_CATEGORY.sales,
     permissions: ["CRM.CUSTOMER.READ", "CRM.MODULE.CRUD"],
   },
   {
@@ -58,20 +78,15 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     href: "/pipeline",
     icon: Target,
     description: "Suivez vos opportunités commerciales.",
+    category: NAVIGATION_CATEGORY.sales,
     permissions: ["CRM.OPPORTUNITY.READ", "CRM.MODULE.CRUD"],
-  },
-  {
-    label: "Produits",
-    href: "/produits",
-    icon: Package,
-    description: "Gérez votre catalogue de produits.",
-    permissions: ["INVENTORY.PRODUCT.READ", "INVENTORY.MODULE.CRUD"],
   },
   {
     label: "Commandes",
     href: "/commandes",
     icon: ShoppingCart,
     description: "Suivez et traitez les commandes clients.",
+    category: NAVIGATION_CATEGORY.sales,
     permissions: ["SALES.ORDER.READ", "SALES.MODULE.CRUD"],
   },
   {
@@ -79,34 +94,47 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     href: "/factures",
     icon: FileText,
     description: "Créez et suivez vos factures.",
+    category: NAVIGATION_CATEGORY.sales,
     permissions: ["INVOICING.INVOICE.READ", "INVOICING.MODULE.CRUD"],
+  },
+  {
+    label: "Produits",
+    href: "/produits",
+    icon: Package,
+    description: "Gérez votre catalogue de produits.",
+    category: NAVIGATION_CATEGORY.operations,
+    permissions: ["INVENTORY.PRODUCT.READ", "INVENTORY.MODULE.CRUD"],
   },
   {
     label: "Stock",
     href: "/stock",
     icon: Warehouse,
     description: "Surveillez vos niveaux de stock.",
+    category: NAVIGATION_CATEGORY.operations,
     permissions: ["INVENTORY.STOCK.READ", "INVENTORY.MODULE.CRUD"],
-  },
-  {
-    label: "Employés",
-    href: "/employes",
-    icon: UserRoundCog,
-    description: "Gérez vos employés et leurs rôles.",
-    permissions: ["HR.EMPLOYEE.READ", "HR.MODULE.CRUD"],
   },
   {
     label: "Caisse (POS)",
     href: "/caisse",
     icon: Monitor,
     description: "Encaissez les ventes au comptoir.",
+    category: NAVIGATION_CATEGORY.operations,
     permissions: ["POS.SALE.READ", "POS.MODULE.CRUD"],
+  },
+  {
+    label: "Employés",
+    href: "/employes",
+    icon: UserRoundCog,
+    description: "Gérez vos employés et leurs rôles.",
+    category: NAVIGATION_CATEGORY.people,
+    permissions: ["HR.EMPLOYEE.READ", "HR.MODULE.CRUD"],
   },
   {
     label: "Paramètres",
     href: "/parametres",
     icon: Settings,
     description: "Configurez votre espace de travail.",
+    category: NAVIGATION_CATEGORY.workspace,
     // Personal/workspace settings are available to every authenticated user
     // until the backend exposes a dedicated settings permission.
     permissions: [],
@@ -123,6 +151,7 @@ export const PLATFORM_NAVIGATION: NavigationItem[] = [
     href: "/admin/tenants",
     icon: Building2,
     description: "Gérez les espaces de travail des entreprises.",
+    category: NAVIGATION_CATEGORY.accounts,
     permissions: ["ERP.TENANT.READ"],
   },
   {
@@ -130,6 +159,7 @@ export const PLATFORM_NAVIGATION: NavigationItem[] = [
     href: "/admin/users",
     icon: UsersRound,
     description: "Gérez les comptes de la plateforme.",
+    category: NAVIGATION_CATEGORY.accounts,
     permissions: ["ERP.USER.READ"],
   },
   {
@@ -137,6 +167,7 @@ export const PLATFORM_NAVIGATION: NavigationItem[] = [
     href: "/admin/roles",
     icon: ShieldCheck,
     description: "Définissez les rôles de la plateforme.",
+    category: NAVIGATION_CATEGORY.access,
     permissions: ["ERP.ROLE.READ"],
   },
   {
@@ -144,6 +175,7 @@ export const PLATFORM_NAVIGATION: NavigationItem[] = [
     href: "/admin/permissions",
     icon: KeyRound,
     description: "Consultez les permissions disponibles.",
+    category: NAVIGATION_CATEGORY.access,
     permissions: ["ERP.PERMISSION.READ"],
   },
   {
@@ -151,6 +183,7 @@ export const PLATFORM_NAVIGATION: NavigationItem[] = [
     href: "/admin/modules",
     icon: Boxes,
     description: "Gérez les modules ERP et leur disponibilité.",
+    category: NAVIGATION_CATEGORY.platform,
     permissions: ["ERP.MODULE.READ"],
   },
   {
@@ -158,6 +191,7 @@ export const PLATFORM_NAVIGATION: NavigationItem[] = [
     href: "/admin/subscriptions",
     icon: CreditCard,
     description: "Suivez les abonnements aux modules.",
+    category: NAVIGATION_CATEGORY.platform,
     permissions: ["ERP.SUBSCRIPTION.READ", "ERP.BILLING.READ"],
   },
   {
@@ -165,6 +199,7 @@ export const PLATFORM_NAVIGATION: NavigationItem[] = [
     href: "/admin/system",
     icon: Activity,
     description: "Supervisez l'état et les journaux de la plateforme.",
+    category: NAVIGATION_CATEGORY.platform,
     permissions: ["ERP.SYSTEM.READ", "ERP.SYSTEM.MONITOR", "ERP.SYSTEM.LOGS"],
   },
 ];
@@ -213,4 +248,25 @@ export function getPlatformNavigationForPermissions(
   return PLATFORM_NAVIGATION.filter((item) =>
     canAccessNavigationItem(item, permissions),
   );
+}
+
+/**
+ * Groups items by category, keeping the order in which each category first
+ * appears. Empty categories are never returned.
+ */
+export function groupNavigationItems(
+  items: readonly NavigationItem[],
+): NavigationGroup[] {
+  const groups: NavigationGroup[] = [];
+
+  for (const item of items) {
+    const group = groups.find((candidate) => candidate.label === item.category);
+    if (group) {
+      group.items.push(item);
+    } else {
+      groups.push({ label: item.category, items: [item] });
+    }
+  }
+
+  return groups;
 }
