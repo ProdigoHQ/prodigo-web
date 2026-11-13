@@ -1,4 +1,8 @@
 import { httpClient } from "@/lib/http/client";
+import {
+  logoutSession,
+  refreshAccessToken,
+} from "@/lib/http/auth-session";
 import type {
   ForgotPasswordInput,
   LoginInput,
@@ -39,5 +43,15 @@ export const authApi = {
       input,
     );
     return data;
+  },
+
+  /** Exchanges the httpOnly refresh cookie for a new access token. */
+  async refresh(): Promise<string> {
+    return refreshAccessToken();
+  },
+
+  /** Revokes the refresh token and clears the cookie on the server. */
+  async logout(): Promise<void> {
+    await logoutSession();
   },
 };
