@@ -155,8 +155,6 @@ export default function RolesPage() {
         emptyState={emptyState}
         itemLabel={["rôle", "rôles"]}
         getRowId={(role) => role.id}
-        selectedRowId={selectedRoleId}
-        onRowClick={(role) => setSelectedRoleId(role.id)}
       />
 
       <RoleDetailsSheet

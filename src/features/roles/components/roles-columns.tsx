@@ -92,11 +92,7 @@ export function getRolesColumns({
       id: "actions",
       header: () => <span className="block text-right">Actions</span>,
       cell: ({ row }) => (
-        <div
-          className="flex items-center justify-end"
-          onClick={(event) => event.stopPropagation()}
-          onKeyDown={(event) => event.stopPropagation()}
-        >
+        <div className="flex items-center justify-end">
           <RoleRowActions
             role={row.original}
             canView={canView}
