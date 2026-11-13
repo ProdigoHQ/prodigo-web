@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, RefreshCw } from "lucide-react";
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -16,6 +22,7 @@ import RoleIcon from "@/features/roles/components/role-icon";
 import RolePermissionsList from "@/features/roles/components/role-permissions-list";
 import { useRoleDetailsQuery } from "@/features/roles/hooks/use-role-details";
 import { formatDate, formatTime } from "@/lib/format";
+import { ApiError } from "@/lib/http/api-error";
 
 type RoleDetailsSheetProps = {
   roleId: string | null;
@@ -47,7 +54,8 @@ export default function RoleDetailsSheet({
   roleId,
   onOpenChange,
 }: RoleDetailsSheetProps) {
-  const { data: role, isPending } = useRoleDetailsQuery(roleId);
+  const { data: role, error, isError, isPending, refetch } =
+    useRoleDetailsQuery(roleId);
   const [copiedRoleId, setCopiedRoleId] = useState<string | null>(null);
 
   const copied = role !== null && role !== undefined && copiedRoleId === role.id;
@@ -78,7 +86,22 @@ export default function RoleDetailsSheet({
         </SheetHeader>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
-          {isPending || !role ? (
+          {isError ? (
+            <Alert variant="destructive">
+              <AlertTitle>Impossible de charger le rôle</AlertTitle>
+              <AlertDescription>
+                {error instanceof ApiError
+                  ? error.message
+                  : "Une erreur inattendue est survenue. Veuillez réessayer."}
+              </AlertDescription>
+              <AlertAction>
+                <Button variant="outline" size="sm" onClick={() => refetch()}>
+                  <RefreshCw data-icon="inline-start" aria-hidden="true" />
+                  Réessayer
+                </Button>
+              </AlertAction>
+            </Alert>
+          ) : isPending || !role ? (
             <DetailsSkeleton />
           ) : (
             <div className="flex flex-col gap-6">

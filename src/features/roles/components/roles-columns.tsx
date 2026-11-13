@@ -1,5 +1,4 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import DataTableColumnHeader from "@/components/shared/data-table-column-header";
 import RoleIcon from "@/features/roles/components/role-icon";
 import RoleRowActions from "@/features/roles/components/role-row-actions";
@@ -37,19 +36,6 @@ const baseColumns: ColumnDef<Role, unknown>[] = [
     ),
     cell: ({ row }) => (
       <span className="text-gray-600">{row.original.description}</span>
-    ),
-    enableGlobalFilter: false,
-  },
-  {
-    id: "permissionsCount",
-    accessorFn: (role) => role.permissions.length,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Permissions" />
-    ),
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="bg-navy-light text-navy">
-        {row.original.permissions.length}
-      </Badge>
     ),
     enableGlobalFilter: false,
   },

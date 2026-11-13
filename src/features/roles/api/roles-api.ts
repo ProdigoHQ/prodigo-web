@@ -1,14 +1,21 @@
-import { ROLES_STATIC_DATA } from "@/features/roles/api/roles-static-data";
+import { httpClient } from "@/lib/http/client";
 import type { Role } from "@/features/roles/types";
 
 export const rolesApi = {
-  // Static until the backend roles endpoints are connected. Replace the bodies
-  // with typed httpClient calls once the routes are confirmed.
+  /**
+   * Platform roles. The backend intentionally leaves `permissions` empty here;
+   * role details are fetched separately with `getById`.
+   */
   async list(): Promise<Role[]> {
-    return [...ROLES_STATIC_DATA];
+    const { data } = await httpClient.get<Role[]>("/s/admin/roles");
+    return data;
   },
 
-  async getById(roleId: string): Promise<Role | null> {
-    return ROLES_STATIC_DATA.find((role) => role.id === roleId) ?? null;
+  /** Platform role with its full permission list. */
+  async getById(roleId: string): Promise<Role> {
+    const { data } = await httpClient.get<Role>(
+      `/s/admin/roles/${encodeURIComponent(roleId)}`,
+    );
+    return data;
   },
 };
