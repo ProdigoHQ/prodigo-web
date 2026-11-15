@@ -13,15 +13,14 @@ type RoleRowActionsProps = {
   /** `ERP.ROLE.DELETE` */
   canDelete: boolean;
   onView: (role: Role) => void;
-  onEdit?: (role: Role) => void;
-  onDelete?: (role: Role) => void;
+  onEdit: (role: Role) => void;
+  onDelete: (role: Role) => void;
 };
 
 /**
  * Row actions for the roles table. Each action only renders when the signed-in
- * user holds the matching permission. `onEdit` / `onDelete` are optional until
- * the edit and delete workflows are wired; without a handler the action is
- * shown disabled so the row stays predictable.
+ * user holds the matching permission, so users without `ERP.ROLE.UPDATE` /
+ * `ERP.ROLE.DELETE` never see the edit or delete affordances.
  */
 export default function RoleRowActions({
   role,
@@ -56,8 +55,7 @@ export default function RoleRowActions({
           size="icon-sm"
           aria-label={`Modifier ${role.name}`}
           title="Modifier le rôle"
-          disabled={!onEdit}
-          onClick={() => onEdit?.(role)}
+          onClick={() => onEdit(role)}
         >
           <Pencil aria-hidden="true" />
         </Button>
@@ -70,8 +68,7 @@ export default function RoleRowActions({
           className="text-gray-500 hover:bg-destructive/10 hover:text-destructive"
           aria-label={`Supprimer ${role.name}`}
           title="Supprimer le rôle"
-          disabled={!onDelete}
-          onClick={() => onDelete?.(role)}
+          onClick={() => onDelete(role)}
         >
           <Trash2 aria-hidden="true" />
         </Button>

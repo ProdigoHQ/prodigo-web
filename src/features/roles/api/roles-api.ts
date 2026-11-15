@@ -1,5 +1,6 @@
 import { httpClient } from "@/lib/http/client";
 import type { Role } from "@/features/roles/types";
+import type { UpdateRoleInput } from "@/features/roles/schemas/role-schema";
 
 export const rolesApi = {
   /**
@@ -17,5 +18,18 @@ export const rolesApi = {
       `/s/admin/roles/${encodeURIComponent(roleId)}`,
     );
     return data;
+  },
+
+  /** Updates the editable role fields (name, description). */
+  async update(roleId: string, input: UpdateRoleInput): Promise<void> {
+    await httpClient.put(`/s/admin/roles/${encodeURIComponent(roleId)}`, {
+      name: input.name,
+      description: input.description,
+    });
+  },
+
+  /** Permanently deletes a platform role. */
+  async remove(roleId: string): Promise<void> {
+    await httpClient.delete(`/s/admin/roles/${encodeURIComponent(roleId)}`);
   },
 };

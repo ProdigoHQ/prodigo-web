@@ -29,9 +29,12 @@ import { Input } from "@/components/ui/input";
 import DataTable from "@/components/shared/data-table";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
 import { getRolesColumns } from "@/features/roles/components/roles-columns";
+import RoleDeleteDialog from "@/features/roles/components/role-delete-dialog";
 import RoleDetailsSheet from "@/features/roles/components/role-details-sheet";
+import RoleEditSheet from "@/features/roles/components/role-edit-sheet";
 import { useRolesQuery } from "@/features/roles/hooks/use-roles";
 import { ROLE_PERMISSIONS } from "@/features/roles/permissions";
+import type { Role } from "@/features/roles/types";
 import { ApiError } from "@/lib/http/api-error";
 
 const SEARCHABLE_COLUMN_IDS = ["name", "description"];
@@ -39,6 +42,8 @@ const SEARCHABLE_COLUMN_IDS = ["name", "description"];
 export default function RolesPage() {
   const [search, setSearch] = useState("");
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
+  const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [deletingRole, setDeletingRole] = useState<Role | null>(null);
   const { data = [], error, isPending, refetch } = useRolesQuery();
   const permissions = useAuthStore((state) => state.permissions);
 
@@ -53,6 +58,8 @@ export default function RolesPage() {
         canUpdate: canUpdateRoles,
         canDelete: canDeleteRoles,
         onView: (role) => setSelectedRoleId(role.id),
+        onEdit: (role) => setEditingRole(role),
+        onDelete: (role) => setDeletingRole(role),
       }),
     [canViewRoles, canUpdateRoles, canDeleteRoles],
   );
@@ -161,6 +168,24 @@ export default function RolesPage() {
         roleId={selectedRoleId}
         onOpenChange={(open) => {
           if (!open) setSelectedRoleId(null);
+        }}
+      />
+
+      <RoleEditSheet
+        role={editingRole}
+        onOpenChange={(open) => {
+          if (!open) setEditingRole(null);
+        }}
+      />
+
+      <RoleDeleteDialog
+        role={deletingRole}
+        onOpenChange={(open) => {
+          if (!open) setDeletingRole(null);
+        }}
+        onDeleted={(deletedRole) => {
+          // The details sheet may still point at the role that just disappeared.
+          if (selectedRoleId === deletedRole.id) setSelectedRoleId(null);
         }}
       />
     </div>

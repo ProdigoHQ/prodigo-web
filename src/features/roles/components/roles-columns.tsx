@@ -65,8 +65,8 @@ export type RolesColumnsOptions = {
   /** `ERP.ROLE.DELETE` — shows the "Supprimer" action. */
   canDelete: boolean;
   onView: (role: Role) => void;
-  onEdit?: (role: Role) => void;
-  onDelete?: (role: Role) => void;
+  onEdit: (role: Role) => void;
+  onDelete: (role: Role) => void;
 };
 
 /**
