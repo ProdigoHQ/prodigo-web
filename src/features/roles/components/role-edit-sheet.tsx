@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Loader2 } from "lucide-react";
+import { KeyRound, Loader2 } from "lucide-react";
 import {
   Alert,
   AlertDescription,
@@ -18,7 +18,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useAuthStore } from "@/features/auth/stores/auth-store";
 import { useUpdateRoleMutation } from "@/features/roles/hooks/use-update-role";
+import { ROLE_PERMISSION_SYNC } from "@/features/roles/permissions";
 import {
   updateRoleSchema,
   type UpdateRoleInput,
@@ -30,6 +32,8 @@ import { toFieldErrors } from "@/lib/validation";
 type RoleEditSheetProps = {
   role: Role | null;
   onOpenChange: (open: boolean) => void;
+  /** Opens the permissions editor for the given role. */
+  onManagePermissions: (role: Role) => void;
 };
 
 type RoleEditFormProps = {
@@ -37,8 +41,11 @@ type RoleEditFormProps = {
   isPending: boolean;
   /** Mutation error, kept untyped so the form decides how to present it. */
   error: unknown;
+  /** `ERP.PERMISSION.ASSIGN` or `ERP.PERMISSION.REVOKE`. */
+  canManagePermissions: boolean;
   onSubmit: (input: UpdateRoleInput) => void;
   onCancel: () => void;
+  onManagePermissions: () => void;
 };
 
 const labelClassName =
@@ -48,8 +55,10 @@ function RoleEditForm({
   role,
   isPending,
   error,
+  canManagePermissions,
   onSubmit,
   onCancel,
+  onManagePermissions,
 }: RoleEditFormProps) {
   const [values, setValues] = useState<UpdateRoleInput>({
     name: role.name,
@@ -178,37 +187,48 @@ function RoleEditForm({
               </p>
             ) : null}
           </div>
-
-          <p className="text-xs text-gray-500">
-            La gestion des permissions de ce rôle sera disponible dans une
-            prochaine étape.
-          </p>
         </div>
       </div>
 
-      <SheetFooter className="border-t border-gray-200 px-6 py-4 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={isPending}
-        >
-          Annuler
-        </Button>
-        <Button
-          type="submit"
-          disabled={isPending || !isDirty}
-          aria-busy={isPending}
-        >
-          {isPending ? (
-            <Loader2
-              data-icon="inline-start"
-              className="animate-spin motion-reduce:animate-none"
-              aria-hidden="true"
-            />
-          ) : null}
-          {isPending ? "Enregistrement…" : "Enregistrer"}
-        </Button>
+      <SheetFooter className="border-t border-gray-200 px-6 py-4 sm:flex-row sm:justify-between">
+        {canManagePermissions ? (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onManagePermissions}
+            disabled={isPending}
+          >
+            <KeyRound data-icon="inline-start" aria-hidden="true" />
+            Permissions
+          </Button>
+        ) : (
+          <span aria-hidden="true" />
+        )}
+
+        <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={isPending}
+          >
+            Annuler
+          </Button>
+          <Button
+            type="submit"
+            disabled={isPending || !isDirty}
+            aria-busy={isPending}
+          >
+            {isPending ? (
+              <Loader2
+                data-icon="inline-start"
+                className="animate-spin motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+            ) : null}
+            {isPending ? "Enregistrement…" : "Enregistrer"}
+          </Button>
+        </div>
       </SheetFooter>
     </form>
   );
@@ -217,9 +237,14 @@ function RoleEditForm({
 export default function RoleEditSheet({
   role,
   onOpenChange,
+  onManagePermissions,
 }: RoleEditSheetProps) {
   const updateMutation = useUpdateRoleMutation();
   const isPending = updateMutation.isPending;
+  const permissions = useAuthStore((state) => state.permissions);
+  const canManagePermissions =
+    permissions.includes(ROLE_PERMISSION_SYNC.ASSIGN) ||
+    permissions.includes(ROLE_PERMISSION_SYNC.REVOKE);
 
   function handleOpenChange(open: boolean) {
     if (!open && isPending) return;
@@ -249,6 +274,8 @@ export default function RoleEditSheet({
             isPending={isPending}
             error={updateMutation.isError ? updateMutation.error : null}
             onSubmit={handleSubmit}
+            canManagePermissions={canManagePermissions}
+            onManagePermissions={() => onManagePermissions(role)}
             onCancel={() => handleOpenChange(false)}
           />
         ) : null}

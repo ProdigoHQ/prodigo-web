@@ -32,6 +32,7 @@ import { getRolesColumns } from "@/features/roles/components/roles-columns";
 import RoleDeleteDialog from "@/features/roles/components/role-delete-dialog";
 import RoleDetailsSheet from "@/features/roles/components/role-details-sheet";
 import RoleEditSheet from "@/features/roles/components/role-edit-sheet";
+import RolePermissionsEditorSheet from "@/features/roles/components/role-permissions-editor";
 import { useRolesQuery } from "@/features/roles/hooks/use-roles";
 import { ROLE_PERMISSIONS } from "@/features/roles/permissions";
 import type { Role } from "@/features/roles/types";
@@ -44,6 +45,7 @@ export default function RolesPage() {
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [deletingRole, setDeletingRole] = useState<Role | null>(null);
+  const [permissionsRole, setPermissionsRole] = useState<Role | null>(null);
   const { data = [], error, isPending, refetch } = useRolesQuery();
   const permissions = useAuthStore((state) => state.permissions);
 
@@ -175,6 +177,14 @@ export default function RolesPage() {
         role={editingRole}
         onOpenChange={(open) => {
           if (!open) setEditingRole(null);
+        }}
+        onManagePermissions={(role) => setPermissionsRole(role)}
+      />
+
+      <RolePermissionsEditorSheet
+        role={permissionsRole}
+        onOpenChange={(open) => {
+          if (!open) setPermissionsRole(null);
         }}
       />
 

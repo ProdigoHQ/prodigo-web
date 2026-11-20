@@ -1,5 +1,5 @@
 import { httpClient } from "@/lib/http/client";
-import type { Role } from "@/features/roles/types";
+import type { Permission, Role } from "@/features/roles/types";
 import type { UpdateRoleInput } from "@/features/roles/schemas/role-schema";
 
 export const rolesApi = {
@@ -20,6 +20,25 @@ export const rolesApi = {
     return data;
   },
 
+  /** Catalog of every platform permission. */
+  async listPermissions(): Promise<Permission[]> {
+    const { data } = await httpClient.get<Permission[]>("/s/admin/permissions");
+    return data;
+  },
+
+  /**
+   * Replaces the role's permission set with the given ids (sync semantics:
+   * grants the checked ones, revokes the unchecked ones).
+   */
+  async syncPermissions(
+    roleId: string,
+    permissionIds: string[],
+  ): Promise<void> {
+    await httpClient.patch(`/s/admin/roles/${encodeURIComponent(roleId)}`, {
+      permissionIds,
+    });
+  },
+
   /** Updates the editable role fields (name, description). */
   async update(roleId: string, input: UpdateRoleInput): Promise<void> {
     await httpClient.put(`/s/admin/roles/${encodeURIComponent(roleId)}`, {
@@ -33,3 +52,4 @@ export const rolesApi = {
     await httpClient.delete(`/s/admin/roles/${encodeURIComponent(roleId)}`);
   },
 };
+
