@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { ChevronLeft, ChevronRight, Loader2, LogOut } from "lucide-react";
 import {
   SidebarFooter,
   SidebarMenu,
@@ -10,11 +12,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { sidebarItemClassName } from "@/components/shared/sidebar-nav-item";
+import { authApi } from "@/features/auth/api/auth-api";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
 
 export default function SidebarUtilities() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const clearAuth = useAuthStore((state) => state.clearAuth);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { state, isMobile, setOpenMobile, toggleSidebar } = useSidebar();
 
   const collapsed = state === "collapsed";
@@ -25,7 +30,18 @@ export default function SidebarUtilities() {
       : "Réduire";
   const ToggleIcon = collapsed && !isMobile ? ChevronRight : ChevronLeft;
 
-  function handleLogout() {
+  async function handleLogout() {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    try {
+      // Revokes the refresh token and clears the httpOnly cookie server-side.
+      await authApi.logout();
+    } catch {
+      // A failed server logout must not trap the user in the session.
+    }
+
+    queryClient.clear();
     clearAuth();
     if (isMobile) setOpenMobile(false);
     router.replace("/login");
@@ -50,14 +66,23 @@ export default function SidebarUtilities() {
 
         <SidebarMenuItem>
           <SidebarMenuButton
-            tooltip="Déconnexion"
-            aria-label="Déconnexion"
+            tooltip={isLoggingOut ? "Déconnexion…" : "Déconnexion"}
+            aria-label={isLoggingOut ? "Déconnexion en cours" : "Déconnexion"}
+            aria-busy={isLoggingOut}
             className={sidebarItemClassName}
+            disabled={isLoggingOut}
             onClick={handleLogout}
           >
-            <LogOut aria-hidden="true" />
+            {isLoggingOut ? (
+              <Loader2
+                className="animate-spin motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+            ) : (
+              <LogOut aria-hidden="true" />
+            )}
             <span className="truncate group-data-[collapsible=icon]:hidden">
-              Déconnexion
+              {isLoggingOut ? "Déconnexion…" : "Déconnexion"}
             </span>
           </SidebarMenuButton>
         </SidebarMenuItem>

@@ -1,5 +1,4 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import DataTableColumnHeader from "@/components/shared/data-table-column-header";
 import RoleIcon from "@/features/roles/components/role-icon";
 import RoleRowActions from "@/features/roles/components/role-row-actions";
@@ -41,19 +40,6 @@ const baseColumns: ColumnDef<Role, unknown>[] = [
     enableGlobalFilter: false,
   },
   {
-    id: "permissionsCount",
-    accessorFn: (role) => role.permissions.length,
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Permissions" />
-    ),
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="bg-navy-light text-navy">
-        {row.original.permissions.length}
-      </Badge>
-    ),
-    enableGlobalFilter: false,
-  },
-  {
     accessorKey: "createdAt",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Créé le" />
@@ -79,8 +65,8 @@ export type RolesColumnsOptions = {
   /** `ERP.ROLE.DELETE` — shows the "Supprimer" action. */
   canDelete: boolean;
   onView: (role: Role) => void;
-  onEdit?: (role: Role) => void;
-  onDelete?: (role: Role) => void;
+  onEdit: (role: Role) => void;
+  onDelete: (role: Role) => void;
 };
 
 /**
@@ -106,11 +92,7 @@ export function getRolesColumns({
       id: "actions",
       header: () => <span className="block text-right">Actions</span>,
       cell: ({ row }) => (
-        <div
-          className="flex items-center justify-end"
-          onClick={(event) => event.stopPropagation()}
-          onKeyDown={(event) => event.stopPropagation()}
-        >
+        <div className="flex items-center justify-end">
           <RoleRowActions
             role={row.original}
             canView={canView}

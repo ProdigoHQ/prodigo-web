@@ -13,6 +13,8 @@ interface AuthState {
   isAuthenticated: boolean;
 
   setAuth: (response: AuthResponse) => void;
+  /** Updates the in-memory access token after a cookie-based refresh. */
+  setAccessToken: (accessToken: string) => void;
   clearAuth: () => void;
   hasRole: (role: string) => boolean;
   hasPermission: (permission: string) => boolean;
@@ -44,6 +46,8 @@ export const useAuthStore = create<AuthState>()(
         });
       },
 
+      setAccessToken: (accessToken) => set({ accessToken }),
+
       clearAuth: () => set(initialState),
 
       hasRole: (role) => get().roles.includes(role),
@@ -55,8 +59,9 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       // accessToken is intentionally left out of persisted storage.
       // On reload, isAuthenticated + userId + tenantSlug survive, but
-      // accessToken comes back null — use that as the trigger to silently
-      // call /auth/refresh on app bootstrap and repopulate it via setAuth().
+      // accessToken comes back null — RequireAuth uses that as the trigger to
+      // call /auth/refresh (httpOnly cookie) and repopulate it via
+      // setAccessToken() before the protected tree renders.
       // Roles and permissions are persisted so permission-gated UI (e.g. the
       // sidebar) renders correctly before the refresh completes. They are a
       // UX hint only: the backend remains the source of truth for access.

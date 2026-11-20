@@ -5,3 +5,13 @@ export const ROLE_PERMISSIONS = {
   UPDATE: "ERP.ROLE.UPDATE",
   DELETE: "ERP.ROLE.DELETE",
 } as const;
+
+/**
+ * Codes required to sync the permissions attached to a role. The backend
+ * endpoint accepts either, so the UI gate mirrors that with an OR.
+ */
+export const ROLE_PERMISSION_SYNC = {
+  ASSIGN: "ERP.PERMISSION.ASSIGN",
+  REVOKE: "ERP.PERMISSION.REVOKE",
+} as const;
+
