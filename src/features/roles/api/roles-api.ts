@@ -1,6 +1,9 @@
 import { httpClient } from "@/lib/http/client";
 import type { Permission, Role } from "@/features/roles/types";
-import type { UpdateRoleInput } from "@/features/roles/schemas/role-schema";
+import type {
+  CreateRoleInput,
+  UpdateRoleInput,
+} from "@/features/roles/schemas/role-schema";
 
 export const rolesApi = {
   /**
@@ -37,6 +40,18 @@ export const rolesApi = {
     await httpClient.patch(`/s/admin/roles/${encodeURIComponent(roleId)}`, {
       permissionIds,
     });
+  },
+
+  /**
+   * Creates a platform role. The backend returns the created role (with zero
+   * permissions); permissions are assigned afterwards via `syncPermissions`.
+   */
+  async create(input: CreateRoleInput): Promise<Role> {
+    const { data } = await httpClient.post<Role>("/s/admin/roles", {
+      name: input.name,
+      description: input.description,
+    });
+    return data;
   },
 
   /** Updates the editable role fields (name, description). */
