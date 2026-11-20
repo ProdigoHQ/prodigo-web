@@ -54,7 +54,14 @@ type DataTableProps<TData> = {
   selectedRowId?: string | null;
   /** Makes rows clickable (mouse + Enter/Space) to open a details view. */
   onRowClick?: (row: TData) => void;
+  /**
+   * Renders one row as a mobile card. When provided, cards replace the table
+   * below `md` (search, sorting and pagination still apply to both layouts).
+   */
+  renderMobileCard?: (row: TData) => ReactNode;
 };
+
+const MOBILE_SKELETON_ROW_COUNT = 4;
 
 export default function DataTable<TData>({
   columns,
@@ -68,6 +75,7 @@ export default function DataTable<TData>({
   getRowId,
   selectedRowId = null,
   onRowClick,
+  renderMobileCard,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -110,7 +118,30 @@ export default function DataTable<TData>({
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.05)]">
-      <Table>
+      {renderMobileCard ? (
+        <div className="flex flex-col gap-3 p-4 md:hidden">
+          {isLoading ? (
+            Array.from({ length: MOBILE_SKELETON_ROW_COUNT }).map(
+              (_, rowIndex) => (
+                <Skeleton
+                  key={rowIndex}
+                  className="h-40 w-full rounded-xl"
+                  aria-hidden="true"
+                />
+              ),
+            )
+          ) : rows.length > 0 ? (
+            rows.map((row) => (
+              <div key={row.id}>{renderMobileCard(row.original)}</div>
+            ))
+          ) : (
+            emptyState
+          )}
+        </div>
+      ) : null}
+
+      <div className={renderMobileCard ? "hidden md:block" : undefined}>
+        <Table>
         <TableHeader className="bg-gray-50">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-gray-50">
@@ -185,7 +216,8 @@ export default function DataTable<TData>({
             </TableRow>
           )}
         </TableBody>
-      </Table>
+        </Table>
+      </div>
 
       <div className="flex flex-col gap-3 border-t border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-gray-500">
@@ -194,7 +226,7 @@ export default function DataTable<TData>({
             : `${firstRow}–${lastRow} sur ${totalRows} ${totalRows > 1 ? itemLabel[1] : itemLabel[0]}`}
         </p>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-end">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">Lignes par page</span>
             <Select
@@ -207,7 +239,7 @@ export default function DataTable<TData>({
             >
               <SelectTrigger
                 size="sm"
-                className="w-[72px]"
+                className="h-11 w-[72px] sm:h-8"
                 aria-label="Nombre de lignes par page"
               >
                 <SelectValue />
@@ -228,7 +260,7 @@ export default function DataTable<TData>({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 gap-1"
+              className="h-11 gap-1 px-4 sm:h-8 sm:px-2.5"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -238,7 +270,7 @@ export default function DataTable<TData>({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 gap-1"
+              className="h-11 gap-1 px-4 sm:h-8 sm:px-2.5"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >

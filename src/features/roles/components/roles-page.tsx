@@ -28,6 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import DataTable from "@/components/shared/data-table";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
+import RoleCard from "@/features/roles/components/role-card";
 import { getRolesColumns } from "@/features/roles/components/roles-columns";
 import RoleDeleteDialog from "@/features/roles/components/role-delete-dialog";
 import RoleDetailsSheet from "@/features/roles/components/role-details-sheet";
@@ -67,6 +68,21 @@ export default function RolesPage() {
   );
 
   const hasSearch = search.trim().length > 0;
+
+  /** Mobile layout: rows become cards with the same permission-gated actions. */
+  function renderMobileCard(role: Role) {
+    return (
+      <RoleCard
+        role={role}
+        canView={canViewRoles}
+        canUpdate={canUpdateRoles}
+        canDelete={canDeleteRoles}
+        onView={(current) => setSelectedRoleId(current.id)}
+        onEdit={setEditingRole}
+        onDelete={setDeletingRole}
+      />
+    );
+  }
 
   const emptyState = (
     <Empty className="border-0 py-12">
@@ -164,6 +180,7 @@ export default function RolesPage() {
         emptyState={emptyState}
         itemLabel={["rôle", "rôles"]}
         getRowId={(role) => role.id}
+        renderMobileCard={renderMobileCard}
       />
 
       <RoleDetailsSheet
